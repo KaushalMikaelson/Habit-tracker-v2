@@ -1,6 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
 import { Flame, Plus, Bell, LogOut, User, ChevronDown } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
+import { useGamification } from '../../store/GamificationContext';
+import LevelBadge from '../gamification/LevelBadge';
+import CoinAnimation from '../gamification/CoinAnimation';
 
 // Get user initials from name
 function getInitials(name = '') {
@@ -15,10 +18,12 @@ function getInitials(name = '') {
 
 export default function TopNav({ onAddHabit }) {
   const { user, logout } = useAuth();
+  const { gameData, recentCoins } = useGamification();
 
-  // Hardcoded in Stage 2 — wired to real habit data in Stage 3
   const streak = 0;
-  const coins = user?.coins ?? 0;
+  const coins = gameData?.coins ?? user?.coins ?? 0;
+  const level = gameData?.level ?? user?.level ?? 1;
+  const totalXP = gameData?.totalXP ?? user?.totalXP ?? 0;
 
   const initials = getInitials(user?.name);
   const displayName = user?.name?.split(' ')[0] ?? 'User';
@@ -48,6 +53,8 @@ export default function TopNav({ onAddHabit }) {
 
       {/* Right: Badges + Actions */}
       <div className="topnav-right">
+        <LevelBadge level={level} xp={totalXP} />
+
         {/* Streak Badge */}
         <div className="stat-badge stat-badge-streak" title="Current streak">
           <Flame size={14} strokeWidth={2.5} />
@@ -56,13 +63,15 @@ export default function TopNav({ onAddHabit }) {
         </div>
 
         {/* Coins Badge */}
-        <div className="stat-badge stat-badge-coins" title="Coins earned">
+        <div className="stat-badge stat-badge-coins" title="Coins earned" style={{ position: 'relative' }}>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <circle cx="12" cy="12" r="8" />
             <path d="M12 6v2m0 8v2M9.5 9.5C9.5 8.7 10.6 8 12 8s2.5.7 2.5 1.5S13.4 11 12 11s-2.5.7-2.5 1.5S10.6 14 12 14s2.5-.7 2.5-1.5" />
           </svg>
           <span>{coins}</span>
           <span style={{ fontWeight: 400, opacity: 0.75, fontSize: '0.7rem' }}>coins</span>
+          
+          <CoinAnimation amount={recentCoins} />
         </div>
 
         {/* Notifications */}

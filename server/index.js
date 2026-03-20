@@ -52,9 +52,13 @@ app.get('/api/health', (req, res) => {
 
 // ── API Routes ───────────────────────────────────────────
 app.use('/api/auth',   require('./routes/auth'));
-// app.use('/api/habits', require('./routes/habits'));   // Stage 3
-// app.use('/api/logs',   require('./routes/logs'));     // Stage 3
-// app.use('/api/stats',  require('./routes/stats'));    // Stage 3
+app.use('/api/habits', require('./routes/habits'));
+app.use('/api/logs',   require('./routes/logs'));
+app.use('/api/reminders', require('./routes/reminders'));
+app.use('/api/dashboard', require('./routes/dashboard'));
+app.use('/api/stats',  require('./routes/stats'));
+app.use('/api/reports', require('./routes/reports'));
+app.use('/api/gamification', require('./routes/gamification')); // Stage 7
 
 // ── 404 Handler ──────────────────────────────────────────
 app.use((req, res) => {

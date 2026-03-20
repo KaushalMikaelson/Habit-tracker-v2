@@ -42,6 +42,15 @@ const userSchema = new mongoose.Schema(
       default: 1,
       min: 1,
     },
+    totalXP: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+    achievements: [{
+      id: String,
+      unlockedAt: Date,
+    }],
   },
   {
     timestamps: true, // adds createdAt + updatedAt automatically
@@ -70,6 +79,8 @@ userSchema.methods.toPublicJSON = function () {
     quote: this.quote,
     coins: this.coins,
     level: this.level,
+    totalXP: this.totalXP,
+    achievements: this.achievements,
     createdAt: this.createdAt,
   };
 };

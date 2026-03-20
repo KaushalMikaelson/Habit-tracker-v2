@@ -8,6 +8,8 @@ import {
   Sparkles,
   Trophy,
   Zap,
+  CalendarDays,
+  CalendarRange
 } from 'lucide-react';
 
 const NAV_ITEMS = [
@@ -17,6 +19,8 @@ const NAV_ITEMS = [
       { to: '/', label: 'Dashboard', icon: LayoutDashboard, end: true },
       { to: '/habits', label: 'Habit Grid', icon: Grid3X3 },
       { to: '/stats', label: 'Stats', icon: BarChart3 },
+      { to: '/weekly', label: 'Weekly View', icon: CalendarDays },
+      { to: '/monthly', label: 'Monthly View', icon: CalendarRange },
       { to: '/reports', label: 'Reports', icon: FileText },
     ],
   },
