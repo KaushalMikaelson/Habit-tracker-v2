@@ -48,7 +48,7 @@ export default function Sidebar() {
             <Zap size={18} color="#0d1117" strokeWidth={2.5} />
           </div>
           <div>
-            <div className="sidebar-logo-title">HabitFlow</div>
+            <div className="sidebar-logo-title">Habit Tracker</div>
             <div className="sidebar-logo-sub">Track your journey</div>
           </div>
         </div>
@@ -110,7 +110,7 @@ export default function Sidebar() {
         >
           <Sparkles size={12} color="var(--text-muted)" />
           <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>
-            HabitFlow v1.0
+            Habit Tracker v1.0
           </span>
         </div>
       </div>

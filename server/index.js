@@ -36,7 +36,7 @@ app.use(express.urlencoded({ extended: true }));
 app.get('/', (req, res) => {
   res.json({
     status: 'ok',
-    message: 'HabitFlow API is running 🚀',
+    message: 'Habit Tracker API is running 🚀',
     version: '1.0.0',
     timestamp: new Date().toISOString(),
   });
@@ -50,11 +50,11 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// ── API Routes  (wired in Stage 2) ──────────────────────
-// app.use('/api/auth',   require('./routes/auth'));
-// app.use('/api/habits', require('./routes/habits'));
-// app.use('/api/logs',   require('./routes/logs'));
-// app.use('/api/stats',  require('./routes/stats'));
+// ── API Routes ───────────────────────────────────────────
+app.use('/api/auth',   require('./routes/auth'));
+// app.use('/api/habits', require('./routes/habits'));   // Stage 3
+// app.use('/api/logs',   require('./routes/logs'));     // Stage 3
+// app.use('/api/stats',  require('./routes/stats'));    // Stage 3
 
 // ── 404 Handler ──────────────────────────────────────────
 app.use((req, res) => {

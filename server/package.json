@@ -1,7 +1,7 @@
 {
   "name": "habitflow-server",
   "version": "1.0.0",
-  "description": "HabitFlow Express + MongoDB API Server",
+  "description": "Habit Tracker Express + MongoDB API Server",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
