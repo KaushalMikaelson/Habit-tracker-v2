@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { motion } from 'framer-motion';
 import { Settings as SettingsIcon, Plus, Archive } from 'lucide-react';
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
@@ -11,6 +12,13 @@ import { format } from 'date-fns';
 import AddHabitModal from '../components/habits/AddHabitModal';
 import EditHabitModal from '../components/habits/EditHabitModal';
 import Spinner from '../components/ui/Spinner';
+import EmptyState from '../components/ui/EmptyState';
+
+const pageVariants = {
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: -20 },
+};
 
 export default function Settings() {
   const { habits, loading, deleteHabit, reorderHabits } = useHabits();
@@ -43,7 +51,14 @@ export default function Settings() {
   };
 
   return (
-    <div style={{ maxWidth: '600px', margin: '0 auto', padding: '20px' }}>
+    <motion.div
+      variants={pageVariants}
+      initial="initial"
+      animate="animate"
+      exit="exit"
+      transition={{ duration: 0.3 }}
+      style={{ maxWidth: '600px', margin: '0 auto', padding: '20px' }}
+    >
       <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' }}>
         <SettingsIcon size={28} className="text-gradient-green" style={{ color: 'var(--accent-green)' }} />
         <h2 className="text-gradient-green">Manage Habits</h2>
@@ -121,6 +136,14 @@ export default function Settings() {
             Achievements <span style={{ color: 'var(--text-muted)', fontWeight: 600, fontSize: '0.9rem' }}>({gameData.achievements.length}/{gameData.ACHIEVEMENTS_LIST.length} Unlocked)</span>
           </h3>
 
+          {gameData.achievements.length === 0 && (
+            <EmptyState
+              emoji="🏆"
+              title="No achievements yet"
+              subtitle="Complete habits to earn achievements and unlock badges"
+            />
+          )}
+
           <div style={styles.grid}>
             {gameData.ACHIEVEMENTS_LIST.map(ach => {
               const unlockedObj = gameData.achievements.find(a => a.id === ach.id);
@@ -151,7 +174,7 @@ export default function Settings() {
           </div>
         </div>
       )}
-    </div>
+    </motion.div>
   );
 }
 

@@ -1,11 +1,11 @@
 import { useState, useRef, useEffect } from 'react';
-import { Flame, Plus, Bell, LogOut, User, ChevronDown } from 'lucide-react';
+import { Flame, Plus, LogOut, User, ChevronDown, Sun, Moon } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { useGamification } from '../../store/GamificationContext';
+import { useTheme } from '../../store/ThemeContext';
 import LevelBadge from '../gamification/LevelBadge';
 import CoinAnimation from '../gamification/CoinAnimation';
 
-// Get user initials from name
 function getInitials(name = '') {
   return name
     .trim()
@@ -19,6 +19,7 @@ function getInitials(name = '') {
 export default function TopNav({ onAddHabit }) {
   const { user, logout } = useAuth();
   const { gameData, recentCoins } = useGamification();
+  const { theme, toggleTheme } = useTheme();
 
   const streak = 0;
   const coins = gameData?.coins ?? user?.coins ?? 0;
@@ -26,13 +27,10 @@ export default function TopNav({ onAddHabit }) {
   const totalXP = gameData?.totalXP ?? user?.totalXP ?? 0;
 
   const initials = getInitials(user?.name);
-  const displayName = user?.name?.split(' ')[0] ?? 'User';
 
-  // Dropdown state
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
 
-  // Close dropdown on outside click
   useEffect(() => {
     const handler = (e) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
@@ -48,41 +46,42 @@ export default function TopNav({ onAddHabit }) {
       {/* Left: Title */}
       <div className="topnav-left">
         <span className="topnav-title">Habit Tracker</span>
-        <span className="topnav-subtitle">Track your consistency</span>
+        <span className="topnav-subtitle hidden-mobile">Track your consistency</span>
       </div>
 
-      {/* Right: Badges + Actions */}
+      {/* Right */}
       <div className="topnav-right">
-        <LevelBadge level={level} xp={totalXP} />
+        {/* Level Badge — hidden on mobile */}
+        <div className="hidden-mobile">
+          <LevelBadge level={level} xp={totalXP} />
+        </div>
 
-        {/* Streak Badge */}
-        <div className="stat-badge stat-badge-streak" title="Current streak">
+        {/* Streak — hidden on mobile */}
+        <div className="stat-badge stat-badge-streak hidden-mobile" title="Current streak">
           <Flame size={14} strokeWidth={2.5} />
           <span>{streak}</span>
           <span style={{ fontWeight: 400, opacity: 0.75, fontSize: '0.7rem' }}>days</span>
         </div>
 
-        {/* Coins Badge */}
+        {/* Coins */}
         <div className="stat-badge stat-badge-coins" title="Coins earned" style={{ position: 'relative' }}>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <circle cx="12" cy="12" r="8" />
             <path d="M12 6v2m0 8v2M9.5 9.5C9.5 8.7 10.6 8 12 8s2.5.7 2.5 1.5S13.4 11 12 11s-2.5.7-2.5 1.5S10.6 14 12 14s2.5-.7 2.5-1.5" />
           </svg>
-          <span>{coins}</span>
-          <span style={{ fontWeight: 400, opacity: 0.75, fontSize: '0.7rem' }}>coins</span>
-          
+          <span className="coin-flip" key={coins}>{coins}</span>
           <CoinAnimation amount={recentCoins} />
         </div>
 
-        {/* Notifications */}
-        <button className="btn-icon" title="Notifications" id="topnav-notifications-btn">
-          <Bell size={18} />
+        {/* Theme Toggle */}
+        <button className="theme-toggle" onClick={toggleTheme} title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}>
+          {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
         </button>
 
         {/* Add Habit Button */}
         <button id="topnav-add-habit-btn" className="add-habit-btn" onClick={onAddHabit}>
           <Plus size={16} strokeWidth={2.5} />
-          Add Habit
+          <span className="hidden-mobile">Add Habit</span>
         </button>
 
         {/* User Avatar + Dropdown */}
@@ -97,17 +96,12 @@ export default function TopNav({ onAddHabit }) {
             <span>{initials}</span>
             <ChevronDown
               size={12}
-              style={{
-                transition: 'transform 0.2s',
-                transform: dropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)',
-              }}
+              style={{ transition: 'transform 0.2s', transform: dropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}
             />
           </button>
 
-          {/* Dropdown Menu */}
           {dropdownOpen && (
             <div style={dropdownStyles.menu}>
-              {/* User Info */}
               <div style={dropdownStyles.userInfo}>
                 <div style={dropdownStyles.avatar}>{initials}</div>
                 <div>
@@ -118,15 +112,18 @@ export default function TopNav({ onAddHabit }) {
 
               <div style={dropdownStyles.divider} />
 
-              {/* Profile Link (placeholder) */}
               <button style={dropdownStyles.item} onClick={() => setDropdownOpen(false)}>
                 <User size={14} />
                 <span>Profile</span>
               </button>
 
+              <button style={dropdownStyles.item} onClick={() => { toggleTheme(); setDropdownOpen(false); }}>
+                {theme === 'dark' ? <Sun size={14} /> : <Moon size={14} />}
+                <span>{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>
+              </button>
+
               <div style={dropdownStyles.divider} />
 
-              {/* Logout */}
               <button
                 id="topnav-logout-btn"
                 style={{ ...dropdownStyles.item, color: '#ef4444' }}
@@ -157,53 +154,20 @@ const dropdownStyles = {
     padding: '8px 0',
     animation: 'fadeIn 0.15s ease',
   },
-  userInfo: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: 10,
-    padding: '10px 14px 12px',
-  },
+  userInfo: { display: 'flex', alignItems: 'center', gap: 10, padding: '10px 14px 12px' },
   avatar: {
-    width: 34,
-    height: 34,
-    borderRadius: '50%',
+    width: 34, height: 34, borderRadius: '50%',
     background: 'linear-gradient(135deg, var(--accent-purple), #ec4899)',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontSize: '0.75rem',
-    fontWeight: 800,
-    color: 'white',
-    flexShrink: 0,
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    fontSize: '0.75rem', fontWeight: 800, color: 'white', flexShrink: 0,
   },
-  userName: {
-    fontSize: '0.875rem',
-    fontWeight: 700,
-    color: 'var(--text-primary)',
-  },
-  userEmail: {
-    fontSize: '0.72rem',
-    color: 'var(--text-muted)',
-    marginTop: 1,
-  },
-  divider: {
-    height: 1,
-    background: 'var(--border-subtle)',
-    margin: '4px 0',
-  },
+  userName: { fontSize: '0.875rem', fontWeight: 700, color: 'var(--text-primary)' },
+  userEmail: { fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: 1 },
+  divider: { height: 1, background: 'var(--border-subtle)', margin: '4px 0' },
   item: {
-    width: '100%',
-    display: 'flex',
-    alignItems: 'center',
-    gap: 10,
-    padding: '9px 14px',
-    background: 'none',
-    border: 'none',
-    color: 'var(--text-secondary)',
-    fontSize: '0.875rem',
-    cursor: 'pointer',
-    textAlign: 'left',
-    fontFamily: 'inherit',
-    transition: 'background 0.15s, color 0.15s',
+    width: '100%', display: 'flex', alignItems: 'center', gap: 10,
+    padding: '9px 14px', background: 'none', border: 'none',
+    color: 'var(--text-secondary)', fontSize: '0.875rem', cursor: 'pointer',
+    textAlign: 'left', fontFamily: 'inherit', transition: 'background 0.15s, color 0.15s',
   },
 };

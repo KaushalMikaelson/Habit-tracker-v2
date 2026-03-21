@@ -3,6 +3,7 @@ import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './store/authStore';
 import { HabitsProvider } from './hooks/useHabits';
 import { GamificationProvider } from './store/GamificationContext';
+import { ThemeProvider } from './store/ThemeContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import Layout from './components/layout/Layout';
 
@@ -30,21 +31,22 @@ const APP_ROUTES = [
 
 export default function App() {
   return (
-    <AuthProvider>
-      <BrowserRouter>
+    <ThemeProvider>
+      <AuthProvider>
+        <BrowserRouter>
         {/* Global toast notifications */}
         <Toaster
           position="top-right"
           toastOptions={{
             style: {
-              background: 'var(--bg-card)',
-              color: 'var(--text-primary)',
-              border: '1px solid var(--border-color)',
+              background: '#161b22',
+              color: '#e6edf3',
+              border: '1px solid #30363d',
               borderRadius: '10px',
               fontSize: '0.875rem',
             },
             success: {
-              iconTheme: { primary: 'var(--accent-green)', secondary: '#0d1117' },
+              iconTheme: { primary: '#00ff88', secondary: '#0d1117' },
             },
             error: {
               iconTheme: { primary: '#ef4444', secondary: '#0d1117' },
@@ -81,5 +83,6 @@ export default function App() {
         </Routes>
       </BrowserRouter>
     </AuthProvider>
+  </ThemeProvider>
   );
 }
